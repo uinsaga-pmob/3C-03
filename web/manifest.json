@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "rentify",
     "short_name": "rentify",
+=======
+    "name": "template",
+    "short_name": "template",
+>>>>>>> 76db26dae4eaf0f76c8e5e5dd383f215abbe76a0
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

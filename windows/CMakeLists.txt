@@ -1,10 +1,18 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+<<<<<<< HEAD
 project(rentify LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "rentify")
+=======
+project(template LANGUAGES CXX)
+
+# The name of the executable created for the application. Change this to change
+# the on-disk name of your application.
+set(BINARY_NAME "template")
+>>>>>>> 76db26dae4eaf0f76c8e5e5dd383f215abbe76a0
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

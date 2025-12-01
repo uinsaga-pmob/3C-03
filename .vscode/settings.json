@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/UIN SALATIGA/SEMESTER 3/flut/rentify/windows/flutter"
+    "cmake.sourceDirectory": "D:/UIN SALATIGA/SEMESTER 3/flut/rentify/windows/flutter",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

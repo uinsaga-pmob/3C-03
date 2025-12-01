@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="rentify"
+=======
+        android:label="template"
+>>>>>>> 76db26dae4eaf0f76c8e5e5dd383f215abbe76a0
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
