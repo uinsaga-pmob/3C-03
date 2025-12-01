@@ -1,0 +1,25 @@
+name: rentify_demo
+description: Demo RENTIFY Flutter app
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  intl: ^0.20.2
+  provider: ^6.0.5
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo.png
+    - assets/google.png
+    - assets/facebook.png
+    - assets/products/product1.png
+    - assets/products/product2.png
+    - assets/products/product3.png
