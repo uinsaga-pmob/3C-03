@@ -6,7 +6,7 @@ import 'dart:math';
 
 class AppState with ChangeNotifier {
   String? _currentUser;
-  Map<String,String> _users = {}; // simple in-memory {username:password}
+  final Map<String,String> _users = {}; // simple in-memory {username:password}
   final List<Product> _products = [];
   final List<Order> _orders = [];
 
