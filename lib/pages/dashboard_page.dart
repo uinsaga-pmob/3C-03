@@ -1,6 +1,7 @@
 // lib/pages/dashboard_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../services/app_state.dart';
 import '../widgets/product_card.dart';
 import 'product_detail_page.dart';
@@ -22,18 +23,22 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ===== PROVIDER =====
     final app = Provider.of<AppState>(context);
 
-    /// ===== FILTER PRODUK (UI ONLY) =====
+    // ===== FILTER PRODUK =====
     final products = app.products.where((p) {
       return p.title.toLowerCase().contains(_keyword.toLowerCase());
     }).toList();
 
-    final tabs = [
+    // ======================================================
+    // ===================== TABS ===========================
+    // ======================================================
+    final List<Widget> tabs = [
       // ================= HOME =================
       Column(
         children: [
-          /// ===== HEADER =====
+          // ===== HEADER =====
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 48, 16, 20),
@@ -56,7 +61,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
                 const SizedBox(height: 16),
 
-                /// ===== SEARCH INTERAKTIF =====
+                // ===== SEARCH =====
                 TextField(
                   onChanged: (v) {
                     setState(() => _keyword = v);
@@ -64,10 +69,8 @@ class _DashboardPageState extends State<DashboardPage> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: 'Search',
-                    hintStyle:
-                        const TextStyle(color: Colors.white70),
-                    prefixIcon:
-                        const Icon(Icons.search, color: Colors.white),
+                    hintStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(Icons.search, color: Colors.white),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.25),
                     border: OutlineInputBorder(
@@ -82,7 +85,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
           const SizedBox(height: 16),
 
-          /// ===== GRID PRODUK =====
+          // ===== GRID PRODUK =====
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -109,8 +112,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) =>
-                                  ProductDetailPage(product: p),
+                              builder: (_) => ProductDetailPage(product: p),
                             ),
                           ),
                         );
@@ -122,20 +124,27 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
 
       // ================= HISTORY =================
-      const Center(child: Text('History page')),
+      const HistoryPage(),
 
       // ================= PROFILE =================
-      const Center(child: Text('Profile page')),
+      const ProfilePage(),
     ];
 
+    // ======================================================
+    // ===================== UI =============================
+    // ======================================================
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: SafeArea(child: tabs[_index]),
+      body: SafeArea(
+        child: tabs[_index],
+      ),
 
-      /// ===== BOTTOM NAV =====
+      // ===== BOTTOM NAV =====
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
+        onTap: (i) {
+          setState(() => _index = i);
+        },
         selectedItemColor: primaryBlue,
         unselectedItemColor: Colors.grey,
         items: const [
