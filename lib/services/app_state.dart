@@ -16,6 +16,7 @@ class AppState with ChangeNotifier {
       Product(id: 'p1', title: 'DSLR 1500D KIT', category: 'Kamera', image: 'assets/products/product1.png', pricePerDay: 50000),
       Product(id: 'p2', title: 'iPhone 14 Pro Max', category: 'Handphone', image: 'assets/products/product2.png', pricePerDay: 150000),
       Product(id: 'p3', title: 'Lenovo LOQ', category: 'Laptop', image: 'assets/products/product3.png', pricePerDay: 80000),
+      Product(id: 'p4', title: 'pS 5', category: 'Play station', image: 'assets/products/product4.png', pricePerDay: 90000),
     ]);
     // demo account
     _users['admin'] = '12345';
