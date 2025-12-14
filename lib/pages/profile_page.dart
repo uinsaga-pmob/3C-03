@@ -1,145 +1,136 @@
-// lib/pages/profile_page.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../services/app_state.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  static const Color primaryBlue = Color(0xFF0066FF);
-
   @override
   Widget build(BuildContext context) {
-    final app = Provider.of<AppState>(context);
-
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-
-      /// ===== APP BAR =====
-      appBar: AppBar(
-        backgroundColor: primaryBlue,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'Pengaturan Akun',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-
-            /// ===== PROFILE CARD =====
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 28,
-                    backgroundColor: primaryBlue,
-                    child: Icon(Icons.person, color: Colors.white, size: 30),
-                  ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'User',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(
-                        app.currentUser ?? '-',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          // ================= HEADER =================
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(
+              top: 50,
+              left: 20,
+              right: 20,
+              bottom: 30,
+            ),
+            decoration: const BoxDecoration(
+              color: Color(0xFF0A5CFF),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
             ),
-
-            const SizedBox(height: 24),
-
-            /// ===== MENU CARD =====
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: const [
-                  _MenuItem(
-                    icon: Icons.notifications,
-                    title: 'Pengaturan Notifikasi',
-                  ),
-                  Divider(height: 1),
-                  _MenuItem(
-                    icon: Icons.help_outline,
-                    title: 'Help Center',
-                  ),
-                ],
-              ),
-            ),
-
-            const Spacer(),
-
-            /// ===== LOGOUT BUTTON =====
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+            child: Column(
+              children: [
+                // Back Button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  app.logout();
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                },
-                child: const Text(
-                  'Logout',
-                  style: TextStyle(fontSize: 16),
+
+                const SizedBox(height: 10),
+
+                // Avatar
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person,
+                    size: 50,
+                    color: Color(0xFF0A5CFF),
+                  ),
                 ),
-              ),
+
+                const SizedBox(height: 10),
+
+                // Name
+                const Text(
+                  "WISNU JAYA",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ================= MENU =================
+          Expanded(
+            child: ListView(
+              children: [
+                menuItem(
+                  icon: Icons.person,
+                  title: "Pengaturan Akun",
+                  onTap: () {},
+                ),
+                menuItem(
+                  icon: Icons.notifications,
+                  title: "Pengaturan Notifikasi",
+                  onTap: () {},
+                ),
+                menuItem(
+                  icon: Icons.star,
+                  title: "Rating",
+                  onTap: () {},
+                ),
+                menuItem(
+                  icon: Icons.info,
+                  title: "About",
+                  onTap: () {},
+                ),
+                menuItem(
+                  icon: Icons.help,
+                  title: "Help Center",
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
-}
 
-/// ===== MENU ITEM (UI SAJA) =====
-class _MenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  const _MenuItem({required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
+  // ================= MENU ITEM WIDGET =================
+  Widget menuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return ListTile(
-      leading: Icon(icon, color: ProfilePage.primaryBlue),
-      title: Text(title),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
+      leading: Icon(
+        icon,
+        color: Color(0xFF0A5CFF),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.chevron_right,
+        color: Colors.grey,
+      ),
+      onTap: onTap,
     );
   }
 }
