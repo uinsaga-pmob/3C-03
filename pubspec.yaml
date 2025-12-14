@@ -21,5 +21,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+  - assets/google.png
+  - assets/facebook.png
+  - assets/products/product1.png
+  - assets/products/product2.png
+  - assets/products/product3.png
 
 
