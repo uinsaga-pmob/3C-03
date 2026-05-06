@@ -204,7 +204,7 @@ class HistoryPage extends StatelessWidget {
                       ],
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
     );
