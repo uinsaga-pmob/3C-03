@@ -1,9 +1,9 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'services/app_state.dart';
-import 'pages/login_page.dart';
+import 'package:rentify_demo/pages/client/login_page.dart';
+import 'package:rentify_demo/services/app_state.dart';
+import 'pages/client/login_page.dart';
 
 void main() {
   runApp(

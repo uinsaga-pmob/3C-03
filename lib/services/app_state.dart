@@ -1,5 +1,6 @@
 // lib/services/app_state.dart
 import 'package:flutter/material.dart';
+import 'package:rentify_demo/pages/client/login_page.dart';
 import '../models/product.dart';
 import '../models/order.dart';
 import 'dart:math';
@@ -64,4 +65,44 @@ class AppState with ChangeNotifier {
     notifyListeners();
     return order;
   }
+// =========================
+// CRUD PRODUCT
+// =========================
+
+// CREATE
+void addProduct(Product product) {
+
+  _products.add(product);
+
+  notifyListeners();
+}
+
+// UPDATE
+void updateProduct(Product updatedProduct) {
+
+  final index = _products.indexWhere(
+    (p) => p.id == updatedProduct.id,
+  );
+
+  if (index != -1) {
+
+    _products[index] = updatedProduct;
+
+    notifyListeners();
+  }
+}
+
+// DELETE
+void deleteProduct(String id) {
+
+  _products.removeWhere(
+    (p) => p.id == id,
+  );
+
+  notifyListeners();
+}
+
+// ADMIN CHECK
+bool get isAdmin =>
+    _currentUser == 'admin';  
 }

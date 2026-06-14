@@ -1,6 +1,6 @@
 // lib/pages/product_detail_page.dart
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import '../../models/product.dart';
 import 'payment_page.dart';
 
 class ProductDetailPage extends StatefulWidget {

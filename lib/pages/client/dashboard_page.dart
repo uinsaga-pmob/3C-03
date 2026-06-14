@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../services/app_state.dart';
-import '../widgets/product_card.dart';
+import '../../services/app_state.dart';
+import '../../widgets/product_card.dart';
 import 'product_detail_page.dart';
 import 'history_page.dart';
 import 'profile_page.dart';

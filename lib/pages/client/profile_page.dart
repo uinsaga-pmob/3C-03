@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rentify_demo/services/app_state.dart'; // Memastikan mengarah ke AppState Anda
+import 'login_page.dart'; // Mengimpor Halaman Login Anda
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Memanggil state management jika ingin melakukan clear session saat logout
+    final app = Provider.of<AppState>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -74,6 +80,8 @@ class ProfilePage extends StatelessWidget {
           // ================= MENU =================
           Expanded(
             child: ListView(
+              padding:
+                  EdgeInsets.zero, // Menghapus padding default bawaan ListView
               children: [
                 menuItem(
                   icon: Icons.person,
@@ -100,6 +108,24 @@ class ProfilePage extends StatelessWidget {
                   title: "Help Center",
                   onTap: () {},
                 ),
+
+                // ================= MENU KELUAR / LOGOUT =================
+                menuItem(
+                  icon: Icons.logout,
+                  title: "Keluar",
+                  textColor: Colors.red,
+                  iconColor: Colors.red,
+                  onTap: () {
+                    // 1. (Opsional) Jalankan fungsi logout pada AppState jika tersedia
+                    // app.logout();
+
+                    // 2. Bersihkan tumpukan halaman dan arahkan ke LoginPage
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -113,17 +139,20 @@ class ProfilePage extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    Color iconColor = const Color(0xFF0A5CFF),
+    Color textColor = Colors.black,
   }) {
     return ListTile(
       leading: Icon(
         icon,
-        color: Color(0xFF0A5CFF),
+        color: iconColor,
       ),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
+          color: textColor,
         ),
       ),
       trailing: const Icon(

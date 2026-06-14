@@ -1,7 +1,7 @@
 // lib/pages/signup_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/app_state.dart';
+import '../../services/app_state.dart';
 import 'dashboard_page.dart';
 
 class SignupPage extends StatefulWidget {
