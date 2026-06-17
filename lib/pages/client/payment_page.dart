@@ -1,13 +1,17 @@
+// lib/pages/client/payment_page.dart
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../models/product.dart';
-import '../../services/app_state.dart';
+
+// Koneksi ke SQLite dan Model baru milik kelompokmu
+import '../../data/database_helper.dart';
+import '../../models/products_model.dart';
 import 'voucher_page.dart';
 import 'payment_options_page.dart';
 
 class PaymentPage extends StatefulWidget {
-  final Product product;
+  final ProductModel product;
   final int days;
+  
   const PaymentPage({super.key, required this.product, required this.days});
 
   @override
@@ -22,8 +26,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final app = Provider.of<AppState>(context, listen: false);
-    final total = widget.product.pricePerDay * widget.days;
+    final total = widget.product.price * widget.days;
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -35,168 +38,177 @@ class _PaymentPageState extends State<PaymentPage> {
           backgroundColor: primaryBlue,
           elevation: 0,
           leading: const BackButton(color: Colors.white),
-          title: const Text('PAYMENT',
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          title: const Text('PAYMENT', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
           centerTitle: true,
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(24),
+              bottomRight: Radius.circular(24),
+            ),
           ),
         ),
       ),
 
       // ================= BODY =================
-      body: ListView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        children: [
-          sectionTitle('Order Summary'),
-
-          card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                rowText('Kategori Order', 'Kamera'),
-                rowText('Jenis Order', widget.product.title),
-                const Divider(),
-                rowText('Name', 'Agung jaya'),
-                rowText('No.HP', '0997767675877'),
-                const Divider(),
-                badge('Location'),
-                rowText('From', 'Bendolgi, Juwangi, Jawa Tengah'),
-                rowText('To', 'Pulutan, Temang, Jawa Timur'),
-                const SizedBox(height: 12),
-                badge('Time order'),
-                rowText('Tanggal sewa', '15/9/2025'),
-                rowText('Tanggal kembali', '16/9/2025'),
-                rowText('Durasi', '${widget.days} hari'),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          sectionTitle('Payment Summary'),
-          card(
-            child: Column(
-              children: [
-                summaryRow('Biaya sewa', 'Rp ${total - 7000000}'),
-                summaryRow('Ongkir', 'Rp 7.000.000'),
-                if (selectedVoucher.isNotEmpty)
-                  summaryRow('Voucher', selectedVoucher),
-                const Divider(),
-                summaryRow('Total Payment', 'Rp $total', bold: true),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // ================= VOUCHER =================
-          listButton(
-            icon: Icons.percent,
-            title: 'Gunakan Voucher Sewa',
-            subtitle: selectedVoucher.isEmpty
-                ? 'Voucher gratis ongkir'
-                : selectedVoucher,
-            onTap: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const VoucherPage()),
-              );
-              if (result != null) {
-                setState(() => selectedVoucher = result);
-              }
-            },
-          ),
-
-          // ================= PAYMENT OPTIONS =================
-          listButton(
-            icon: Icons.account_balance_wallet,
-            title: 'Payment Options',
-            subtitle: selectedPayment,
-            onTap: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const PaymentOptionsPage()),
-              );
-              if (result != null) {
-                setState(() => selectedPayment = result);
-              }
-            },
-          ),
-        ],
-      ),
-
-      // ================= BOTTOM =================
-      bottomNavigationBar: bottomBar(total, app),
-    );
-  }
-
-  // ================= UI COMPONENT =================
-  Widget bottomBar(int total, AppState app) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+            const Text("Detail Barang", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+
+            card(
+              child: Row(
                 children: [
-                  const Text('Total Payment',
-                      style: TextStyle(color: Colors.grey, fontSize: 12)),
-                  Text('Rp $total',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: widget.product.imageUrl.startsWith('http')
+                        ? Image.network(widget.product.imageUrl, width: 70, height: 70, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 70))
+                        : Image.file(File(widget.product.imageUrl), width: 70, height: 70, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 70)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.product.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        const SizedBox(height: 4),
+                        Text('Durasi: ${widget.days} Hari', style: const TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'Rp ${widget.product.price.toStringAsFixed(0)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: primaryBlue),
+                  ),
                 ],
               ),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryBlue,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
+
+            const SizedBox(height: 20),
+            const Text("Metode & Promo", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+
+            card(
+              child: listButton(
+                icon: Icons.confirmation_number_outlined,
+                title: 'Voucher Rental',
+                subtitle: selectedVoucher.isEmpty ? 'Gunakan voucher biar lebih hemat' : selectedVoucher,
+                onTap: () async {
+                  final res = await Navigator.push(context, MaterialPageRoute(builder: (_) => const VoucherPage()));
+                  if (res != null) setState(() => selectedVoucher = res);
+                },
               ),
-              onPressed: () {
-                app.rentProduct(widget.product, widget.days);
-                Navigator.popUntil(context, (route) => route.isFirst);
-              },
-              child: const Text('Bayar'),
-            )
+            ),
+            const SizedBox(height: 12),
+
+            card(
+              child: listButton(
+                icon: Icons.payment_outlined,
+                title: 'Metode Pembayaran',
+                subtitle: selectedPayment,
+                onTap: () async {
+                  final res = await Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentOptionsPage()));
+                  if (res != null) setState(() => selectedPayment = res);
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+            const Text("Ringkasan Biaya", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+
+            card(
+              child: Column(
+                children: [
+                  summaryRow('Harga Sewa (${widget.days} hari)', 'Rp ${total.toStringAsFixed(0)}'),
+                  summaryRow('Biaya Admin', 'Rp 2.000'),
+                  const Divider(),
+                  summaryRow('Total Pembayaran', 'Rp ${(total + 2000).toStringAsFixed(0)}', bold: true),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // ================= BUTTON CONFIRM / BAYAR NYATA KE SQLITE =================
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryBlue,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  elevation: 0,
+                ),
+                onPressed: () async {
+                  final Map<String, dynamic> orderBaru = {
+                    'id': DateTime.now().millisecondsSinceEpoch.toString(), 
+                    'productId': widget.product.id,
+                    // 'productName': widget.product.name,
+                    // 'days': widget.days,
+                    'totalPrice': total + 2000,
+                    // 'date': DateTime.now().toString().split(' ')[0], 
+                  };
+
+                  final db = await DatabaseHelper.database;
+                  int hasil = await db.insert('orders', orderBaru);
+
+                  if (!mounted) return;
+
+                  if (hasil > 0) {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (ctx) => AlertDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        title: const Row(
+                          children: [
+                            Icon(Icons.check_circle_rounded, color: Colors.green, size: 28),
+                            SizedBox(width: 10),
+                            Text('Sewa Berhasil!', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        content: const Text('Transaksi rentalmu telah berhasil disimpan ke database. Silakan cek di tab Riwayat.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              if (!ctx.mounted) return;
+                              Navigator.pop(ctx); // Menutup pop-up dialog sukses
+                              
+                              if (!context.mounted) return;
+                              // FIX NAVIGASI AMAN: Mundur kembali dan mengembalikan nilai true agar halaman katalog disegarkan otomatis
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text('OK, Siap!', style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold)),
+                          )
+                        ],
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Gagal memproses pembayaran ke database SQLite.')),
+                    );
+                  }
+                },
+                child: const Text(
+                  'Bayar & Konfirmasi Sekarang',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 40),
           ],
         ),
-      );
-
-  Widget sectionTitle(String t) => Text(t,
-      style: const TextStyle(color: primaryBlue, fontWeight: FontWeight.bold));
-
-  Widget badge(String t) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(8),
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-            color: primaryBlue, borderRadius: BorderRadius.circular(6)),
-        child: Text(t,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white)),
-      );
+      ),
+    );
+  }
 
   Widget card({required Widget child}) => Container(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(16)),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
         child: child,
-      );
-
-  Widget rowText(String l, String r) => Row(
-        children: [
-          Expanded(child: Text(l, style: const TextStyle(color: Colors.grey))),
-          Expanded(
-              child:
-                  Text(r, style: const TextStyle(fontWeight: FontWeight.w600))),
-        ],
       );
 
   Widget summaryRow(String l, String r, {bool bold = false}) => Padding(
@@ -204,10 +216,8 @@ class _PaymentPageState extends State<PaymentPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(l),
-            Text(r,
-                style: TextStyle(
-                    fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+            Text(l, style: TextStyle(color: bold ? Colors.black : Colors.grey.shade700, fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+            Text(r, style: TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal, color: bold ? primaryBlue : Colors.black)),
           ],
         ),
       );
@@ -219,10 +229,15 @@ class _PaymentPageState extends State<PaymentPage> {
     required VoidCallback onTap,
   }) =>
       ListTile(
-        leading: Icon(icon, color: primaryBlue),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
+        contentPadding: EdgeInsets.zero,
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(color: primaryBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+          child: Icon(icon, color: primaryBlue),
+        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+        subtitle: Text(subtitle, style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
         onTap: onTap,
       );
 }
